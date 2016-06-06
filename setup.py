@@ -40,7 +40,7 @@ setup(
     url='https://github.com/Pythonity/python-ivona-api',
     download_url='https://github.com/Pythonity/python-ivona-api/releases/latest',
     bugtrack_url='https://github.com/Pythonity/python-ivona-api/issues',
-    version='0.1.0',
+    version='0.1.1',
     license='MIT License',
     author='Pythonity',
     author_email='pythonity@pythonity.com',
