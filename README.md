@@ -1,7 +1,6 @@
 # python-ivona-api
 [![Build Status](https://img.shields.io/travis/Pythonity/python-ivona-api.svg)][ivona api github]
 [![PyPI Version](https://img.shields.io/pypi/v/ivona_api.svg)][ivona api pypi]
-[![PyPI Downloads](https://img.shields.io/pypi/dm/ivona_api.svg)][ivona api pypi]
 [![Python Versions](https://img.shields.io/pypi/pyversions/ivona_api.svg)][ivona api pypi]
 [![License](https://img.shields.io/github/license/Pythonity/icon-font-to-png.svg)][license]
 
