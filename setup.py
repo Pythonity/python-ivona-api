@@ -50,6 +50,7 @@ setup(
                 "Speech Cloud from within your Python project.",
     long_description=description,
     packages=find_packages(),
+    include_package_data=True,
     tests_require=['tox'],
     cmdclass={'test': Tox},
     install_requires=[
