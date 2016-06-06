@@ -1,4 +1,10 @@
 # python-ivona-api
+[![Build Status](https://img.shields.io/travis/Pythonity/python-ivona-api.svg)][ivona api github]
+[![PyPI Version](https://img.shields.io/pypi/v/ivona_api.svg)][ivona api pypi]
+[![PyPI Downloads](https://img.shields.io/pypi/dm/ivona_api.svg)][ivona api pypi]
+[![Python Versions](https://img.shields.io/pypi/pyversions/ivona_api.svg)][ivona api pypi]
+[![License](https://img.shields.io/github/license/Pythonity/icon-font-to-png.svg)][license]
+
 Python (3) library that helps you connect to Amazon's [IVONA][ivona]
 Speech Cloud from within your Python project. You need its
 [access keys][ivona keys] to use it.
@@ -33,7 +39,7 @@ Package was tested with `pytest` and `tox` on Python 3.4
 
 To run tests yourself you need to set environment variables with secret
 and access keys before running `tox` inside the repository:
-```
+```shell
 export IVONA_ACCESS_KEY="YOUR_ACTUAL_ACCESS_KEY"
 export IVONA_SECRET_KEY="YOUR_ACTUAL_SECRET_KEY"
 ```
@@ -49,9 +55,11 @@ Developed and maintained by [Pythonity][pythonity].
 
 Written by [Paweł Adamczak][pawelad].
 
+[ivona api github]: https://github.com/Pythonity/python-ivona-api
+[ivona api pypi]: https://pypi.python.org/pypi/ivona_api
+[license]: https://github.com/Pythonity/python-ivona-api/blob/master/LICENSE
 [ivona]: https://www.ivona.com/
 [ivona keys]: http://developer.ivona.com/en/speechcloud/introduction.html#Credentials
 [ivona speak github]: https://github.com/Pythonity/ivona-speak
-[ivona api github]: https://github.com/Pythonity/python-ivona-api
 [pythonity]: http://pythonity.com/
 [pawelad]: https://github.com/pawelad
