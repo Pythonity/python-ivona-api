@@ -76,7 +76,7 @@ class IvonaAPI:
         self._voice_name = voice_name
         self._language = language
 
-    def get_available_voices(self):
+    def get_available_voices(self, filter_language=None):
         """
         Returns a list of available voices, via 'ListVoices' endpoint
             http://developer.ivona.com/en/speechcloud/actions.html#ListVoices
@@ -84,7 +84,19 @@ class IvonaAPI:
         endpoint = urljoin(
             IVONA_REGION_ENDPOINTS[self.region], 'ListVoices',
         )
-        r = requests.get(endpoint, auth=self._aws4auth)
+        if filter_language:
+            if not any([v['Language'] == filter_language
+                        for v in self.available_voices]):
+                raise ValueError("Incorrect language.")
+
+            data = {
+                'Voice': {
+                    'Language': filter_language,
+                },
+            }
+            r = requests.post(endpoint, auth=self._aws4auth, json=data)
+        else:
+            r = requests.get(endpoint, auth=self._aws4auth)
 
         if 'x-amzn-ErrorType' in r.headers:
             raise IvonaAPIException(r.headers['x-amzn-ErrorType'])

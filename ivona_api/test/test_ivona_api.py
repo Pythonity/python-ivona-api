@@ -48,8 +48,8 @@ def test_init(auth_keys):
 def test_available_voices(auth_keys):
     """Test getting available voices"""
     ivona_api = IvonaAPI(auth_keys[0], auth_keys[1])
-    voices = ivona_api.available_voices
 
+    voices = ivona_api.available_voices
     assert len(voices) > 1
 
     # Make sure that default voice is available
@@ -57,16 +57,20 @@ def test_available_voices(auth_keys):
                 for v in voices])
 
 
-def test_text_to_speech_custom_voice(auth_keys):
-    """Test setting custom voice"""
+@flaky
+def test_available_voices_with_filter(auth_keys):
+    """Test getting available voices with filtering"""
     ivona_api = IvonaAPI(auth_keys[0], auth_keys[1])
 
     with pytest.raises(ValueError):
-        with tempfile.NamedTemporaryFile() as temp_file:
-            ivona_api.text_to_speech(
-                str(uuid4()), temp_file,
-                voice_name=str(uuid4()),
-            )
+        ivona_api.get_available_voices(str(uuid4()))
+
+    voices = ivona_api.get_available_voices('en-US')
+    assert len(voices) > 1
+
+    # Make sure that default voice is available
+    assert any([v['Name'] == 'Salli' and v['Language'] == 'en-US'
+                for v in voices])
 
 
 @flaky
@@ -86,3 +90,15 @@ def test_text_to_speech(auth_keys, voice_name, voice_language, content,
         ivona_api.text_to_speech(content, temp_file)
 
         assert filecmp.cmp(org_file, temp_file.name)
+
+
+def test_text_to_speech_custom_voice(auth_keys):
+    """Test setting custom voice"""
+    ivona_api = IvonaAPI(auth_keys[0], auth_keys[1])
+
+    with pytest.raises(ValueError):
+        with tempfile.NamedTemporaryFile() as temp_file:
+            ivona_api.text_to_speech(
+                str(uuid4()), temp_file,
+                voice_name=str(uuid4()),
+            )
