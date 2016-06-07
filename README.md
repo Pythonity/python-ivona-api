@@ -1,8 +1,8 @@
 # python-ivona-api
-[![Build Status](https://img.shields.io/travis/Pythonity/python-ivona-api.svg)][ivona api github]
+[![Build Status](https://img.shields.io/travis/Pythonity/python-ivona-api.svg)][ivona api travis]
 [![PyPI Version](https://img.shields.io/pypi/v/ivona_api.svg)][ivona api pypi]
 [![Python Versions](https://img.shields.io/pypi/pyversions/ivona_api.svg)][ivona api pypi]
-[![License](https://img.shields.io/github/license/Pythonity/icon-font-to-png.svg)][license]
+[![License](https://img.shields.io/github/license/Pythonity/python-ivona-api.svg)][license]
 
 Python (3) library that helps you connect to Amazon's [IVONA][ivona]
 Speech Cloud from within your Python project. You need its
@@ -16,11 +16,8 @@ If you're looking for out-of-the-box solution, have a look at
 [ivona-speak][ivona speak github] - it's a script that uses this very
 library and lets you use its functionality directly from your shell.
 
-Packages required for running and testing are listed in `requirements`
-directory.
-
 ## Installation
-With `pip`:
+With `PyPI`:
 ```
 $ pip3 install ivona_api
 ```
@@ -54,6 +51,7 @@ Developed and maintained by [Pythonity][pythonity].
 
 Written by [Paweł Adamczak][pawelad].
 
+[ivona api travis]: https://travis-ci.org/Pythonity/python-ivona-api
 [ivona api github]: https://github.com/Pythonity/python-ivona-api
 [ivona api pypi]: https://pypi.python.org/pypi/ivona_api
 [license]: https://github.com/Pythonity/python-ivona-api/blob/master/LICENSE
