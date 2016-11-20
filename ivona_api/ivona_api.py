@@ -7,9 +7,9 @@ from six.moves.urllib.parse import urljoin
 
 
 IVONA_REGION_ENDPOINTS = {
-    'eu-west-1': 'https://tts.eu-west-1.ivonacloud.com',  # EU, Dublin
-    'us-east-1': 'https://tts.us-east-1.ivonacloud.com',  # US East, N. Virginia
-    'us-west-2': 'https://tts.us-west-2.ivonacloud.com',  # US West, Oregon
+    'eu-west-1': 'https://tts.eu-west-1.ivonacloud.com',  # EU
+    'us-east-1': 'https://tts.us-east-1.ivonacloud.com',  # US East
+    'us-west-2': 'https://tts.us-west-2.ivonacloud.com',  # US West
 }
 
 
@@ -38,7 +38,7 @@ class IvonaAPI:
     @codec.setter
     def codec(self, value):
         if value.lower() not in self.ALLOWED_CODECS:
-            raise ValueError("Incorrect codec - only ogg, mp3 and mp4 allowed.")
+            raise ValueError("Incorrect codec - only ogg, mp3 and mp4 allowed")
         self._codec = value
 
     def __init__(self, access_key, secret_key, voice_name='Salli',

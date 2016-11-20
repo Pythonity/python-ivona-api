@@ -36,6 +36,7 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+
 setup(
     name='ivona_api',
     url='https://github.com/Pythonity/python-ivona-api',
