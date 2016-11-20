@@ -13,7 +13,7 @@ IVONA_REGION_ENDPOINTS = {
 }
 
 
-class IvonaAPI:
+class IvonaAPI(object):
     """
     Base class that for accessing Ivona web API.
     Currently implements 'CreateSpeech' and 'ListVoices' endpoints, without
@@ -105,7 +105,7 @@ class IvonaAPI:
 
         return r.json()['Voices']
 
-    def text_to_speech(self, text, file, voice_name=None, language=None):
+    def text_to_speech(self, text, path, voice_name=None, language=None):
         """
         Saves given text synthesized audio file, via 'CreateSpeech' endpoint
             http://developer.ivona.com/en/speechcloud/actions.html#CreateSpeech
@@ -123,7 +123,7 @@ class IvonaAPI:
 
         data = {
             'Input': {
-                'Data': str(text),
+                'Data': text,
             },
             'OutputFormat': {
                 'Codec': self.codec.upper(),
@@ -145,6 +145,7 @@ class IvonaAPI:
         if 'x-amzn-ErrorType' in r.headers:
             raise IvonaAPIException(r.headers['x-amzn-ErrorType'])
 
+        file = open(path, 'wb')
         file.write(r.content)
 
         return True

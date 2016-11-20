@@ -90,7 +90,7 @@ def test_text_to_speech(auth_keys, voice_name, voice_language, content,
     )
 
     with tempfile.NamedTemporaryFile() as temp_file:
-        ivona_api.text_to_speech(content, temp_file)
+        ivona_api.text_to_speech(content, temp_file.name)
 
         assert filecmp.cmp(org_file, temp_file.name)
 
@@ -102,6 +102,6 @@ def test_text_to_speech_custom_voice(auth_keys):
     with pytest.raises(ValueError):
         with tempfile.NamedTemporaryFile() as temp_file:
             ivona_api.text_to_speech(
-                str(uuid4()), temp_file,
+                str(uuid4()), temp_file.name,
                 voice_name=str(uuid4()),
             )
