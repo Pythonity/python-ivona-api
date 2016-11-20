@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import os
 import tempfile
@@ -56,8 +56,10 @@ def test_available_voices(auth_keys):
     assert len(voices) > 1
 
     # Make sure that default voice is available
-    assert any([v['Name'] == 'Salli' and v['Language'] == 'en-US'
-                for v in voices])
+    assert any(
+        [v['Name'] == 'Salli' and v['Language'] == 'en-US'
+         for v in voices]
+    )
 
 
 @flaky
@@ -72,8 +74,10 @@ def test_available_voices_with_filter(auth_keys):
     assert len(voices) > 1
 
     # Make sure that default voice is available
-    assert any([v['Name'] == 'Salli' and v['Language'] == 'en-US'
-                for v in voices])
+    assert any(
+        [v['Name'] == 'Salli' and v['Language'] == 'en-US'
+         for v in voices]
+    )
 
 
 @flaky
@@ -102,6 +106,7 @@ def test_text_to_speech_custom_voice(auth_keys):
     with pytest.raises(ValueError):
         with tempfile.NamedTemporaryFile() as temp_file:
             ivona_api.text_to_speech(
-                str(uuid4()), temp_file.name,
+                text=str(uuid4()),
+                path=temp_file.name,
                 voice_name=str(uuid4()),
             )
