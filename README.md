@@ -61,4 +61,4 @@ Written by [Paweł Adamczak][pawelad].
 [pawelad]: https://github.com/pawelad
 [pythonity]: http://pythonity.com/
 [travis]: https://travis-ci.org/Pythonity/python-ivona-api
-[ypi]: https://pypi.python.org/pypi/ivona_api
+[pypi]: https://pypi.python.org/pypi/ivona_api
