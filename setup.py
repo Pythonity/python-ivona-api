@@ -54,8 +54,9 @@ setup(
     tests_require=['tox'],
     cmdclass={'test': Tox},
     install_requires=[
-        'requests>=2.10.0',
+        'requests[security]>=2.12.1',
         'requests-aws4auth>=0.9',
+        'six>=1.10.0',
     ],
     extras_require={
         'testing': ['pytest', 'flaky'],
