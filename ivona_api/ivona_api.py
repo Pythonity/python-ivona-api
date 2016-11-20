@@ -1,7 +1,9 @@
-from urllib.parse import urljoin
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 import requests
 from requests_aws4auth import AWS4Auth
+from six.moves.urllib.parse import urljoin
 
 
 IVONA_REGION_ENDPOINTS = {
