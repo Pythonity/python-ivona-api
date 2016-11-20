@@ -4,4 +4,4 @@ from __future__ import absolute_import, unicode_literals
 from ivona_api.ivona_api import IvonaAPI  # noqa
 
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
