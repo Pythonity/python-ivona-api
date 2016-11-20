@@ -74,7 +74,7 @@ class IvonaAPI(object):
     def set_voice(self, voice_name, language):
         """Make sure that passed voice name and language pair exists"""
         if not self._check_if_voice_exists(voice_name, language):
-            raise ValueError("Incorrect voice name-language pair.")
+            raise ValueError("Incorrect voice name-language pair")
         self._voice_name = voice_name
         self._language = language
 
@@ -89,7 +89,7 @@ class IvonaAPI(object):
         if filter_language:
             if not any([v['Language'] == filter_language
                         for v in self.available_voices]):
-                raise ValueError("Incorrect language.")
+                raise ValueError("Incorrect language")
 
             data = {
                 'Voice': {
@@ -112,7 +112,7 @@ class IvonaAPI(object):
         """
         if voice_name or language:
             if not self._check_if_voice_exists(voice_name, language):
-                raise ValueError("Incorrect voice name-language pair.")
+                raise ValueError("Incorrect voice name-language pair")
         else:
             voice_name = self._voice_name
             language = self._language

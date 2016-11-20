@@ -12,7 +12,7 @@ from flaky import flaky
 from ivona_api.ivona_api import IvonaAPI, IvonaAPIException
 
 
-# Module fixtures
+# Fixtures
 @pytest.fixture(scope='module')
 def auth_keys():
     """Get working auth keys from environment variables"""
