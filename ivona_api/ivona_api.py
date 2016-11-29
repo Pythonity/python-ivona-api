@@ -105,9 +105,9 @@ class IvonaAPI(object):
 
         return r.json()['Voices']
 
-    def text_to_speech(self, text, path, voice_name=None, language=None):
+    def text_to_speech_fp(self, text, fp, voice_name=None, language=None):
         """
-        Saves given text synthesized audio file, via 'CreateSpeech' endpoint
+        Writes given text synthesized audio to a file pointer, via 'CreateSpeech' endpoint
             http://developer.ivona.com/en/speechcloud/actions.html#CreateSpeech
         """
         if voice_name or language:
@@ -145,8 +145,17 @@ class IvonaAPI(object):
         if 'x-amzn-ErrorType' in r.headers:
             raise IvonaAPIException(r.headers['x-amzn-ErrorType'])
 
-        file = open(path, 'wb')
-        file.write(r.content)
+        fp.write(r.content)
+
+        return True
+
+    def text_to_speech(self, text, path, voice_name=None, language=None):
+        """
+        Saves given text synthesized audio file.
+        """
+
+        with open(path, 'wb') as file:
+            self.text_to_speech_fp(text, file, voice_name, language)
 
         return True
 
