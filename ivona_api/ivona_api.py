@@ -140,13 +140,6 @@ class IvonaAPI(object):
         :param language: voice language
         :type language: str
         """
-        if voice_name or language:
-            if not self._check_if_voice_exists(voice_name, language):
-                raise ValueError("Incorrect voice name-language pair")
-        else:
-            voice_name = self._voice_name
-            language = self._language
-
         endpoint = urljoin(
             IVONA_REGION_ENDPOINTS[self.region], 'CreateSpeech',
         )
@@ -165,17 +158,14 @@ class IvonaAPI(object):
                 'ParagraphBreak': self.paragraph_break,
             },
             'Voice': {
-                'Name': voice_name,
-                'Language': language,
+                'Name': voice_name or self._voice_name,
+                'Language': language or self._language,
             },
         }
 
-        r = requests.post(endpoint, auth=self._aws4auth, json=data)
+        response = requests.post(endpoint, auth=self._aws4auth, json=data)
 
-        if 'x-amzn-ErrorType' in r.headers:
-            raise IvonaAPIException(r.headers['x-amzn-ErrorType'])
+        if 'x-amzn-ErrorType' in response.headers:
+            raise IvonaAPIException(response.headers['x-amzn-ErrorType'])
 
-        file = open(path, 'wb')
-        file.write(r.content)
-
-        return True
+        file.write(response.content)
