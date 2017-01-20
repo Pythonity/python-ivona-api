@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
+import os
+
 import requests
 from requests_aws4auth import AWS4Auth
 from six.moves.urllib.parse import urljoin
 
 from ivona_api.exceptions import IvonaAPIException
 
+
+IVONA_ACCESS_KEY_ENV = 'IVONA_ACCESS_KEY'
+IVONA_SECRET_KEY_ENV = 'IVONA_SECRET_KEY'
 
 IVONA_REGION_ENDPOINTS = {
     'eu-west-1': 'https://tts.eu-west-1.ivonacloud.com',  # EU
@@ -21,7 +26,7 @@ class IvonaAPI(object):
     Currently implements 'CreateSpeech' and 'ListVoices' endpoints, without
     support for lexicon actions.
     """
-    def __init__(self, access_key, secret_key, voice_name='Salli',
+    def __init__(self, access_key=None, secret_key=None, voice_name='Salli',
                  language='en-US', codec='mp3', region='eu-west-1'):
         """
         Initialize class instance with AWS4Auth object and default voice
@@ -40,6 +45,9 @@ class IvonaAPI(object):
         :param region: Amazon datacenter region
         :type region: str
         """
+        self._access_key = access_key or os.environ[IVONA_ACCESS_KEY_ENV]
+        self._secret_key = secret_key or os.environ[IVONA_SECRET_KEY_ENV]
+
         # Choices: 'eu-west-1', 'us-east-1', 'us-west-2'
         self.region = region
         # Choices: 'ogg', 'mp3', 'mp4'
@@ -47,7 +55,10 @@ class IvonaAPI(object):
         self.voice_name = voice_name
         self.language = language
 
-        self._aws4auth = AWS4Auth(access_key, secret_key, region, 'tts')
+        self._aws4auth = AWS4Auth(
+            self._access_key, self._secret_key,
+            region, 'tts',
+        )
 
         self.session = requests.Session()
         self.session.auth = self._aws4auth
