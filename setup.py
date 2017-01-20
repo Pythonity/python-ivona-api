@@ -55,7 +55,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'requests[security]>=2.12.1',
+        'requests>=2.12.5',
         'requests-aws4auth>=0.9',
         'six>=1.10.0',
     ],
