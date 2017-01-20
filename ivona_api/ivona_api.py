@@ -42,13 +42,15 @@ class IvonaAPI(object):
         """
         # Choices: 'eu-west-1', 'us-east-1', 'us-west-2'
         self.region = region
-        self._aws4auth = AWS4Auth(access_key, secret_key, region, 'tts')
-
-        self.available_voices = self.get_available_voices()
-        self.set_voice(voice_name, language)
-
         # Choices: 'ogg', 'mp3', 'mp4'
         self.codec = codec.lower()
+        self.voice_name = voice_name
+        self.language = language
+
+        self._aws4auth = AWS4Auth(access_key, secret_key, region, 'tts')
+
+        self.session = requests.Session()
+        self.session.auth = self._aws4auth
 
         # Below are listed additional parameters that have default values,
         # but are initialized here so that they can be changed on instance
@@ -64,36 +66,35 @@ class IvonaAPI(object):
         # Integer in the range of 0-5000 (in milliseconds)
         self.paragraph_break = 650
 
-    def _check_if_voice_exists(self, voice_name, language):
+    def _get_response(self, method, endpoint, data=None):
         """
-        Helper method that checks if given voice actually exists
+        Helper method for wrapping API requests, mainly for catching errors
+        in one place.
 
-        :param voice_name: voice name
-        :type voice_name: str
-        :param language: voice language
-        :type language: str
-        :returns: if the voice exists
-        :rtype: bool
+        :param method: valid HTTP method
+        :type method: str
+        :param endpoint: API endpoint
+        :type endpoint: str
+        :param data: extra parameters passed with the request
+        :type data: dict
+        :returns: API response
+        :rtype: Response
         """
-        voice_exists = not any(
-            [v['Name'] == voice_name and v['Language'] == language
-             for v in self.available_voices]
+        url = urljoin(IVONA_REGION_ENDPOINTS[self.region], endpoint)
+
+        response = getattr(self.session, method)(
+            url, json=data,
         )
-        return voice_exists
 
-    def set_voice(self, voice_name, language):
-        """
-        Set Ivona voice
+        if 'x-amzn-ErrorType' in response.headers:
+            raise IvonaAPIException(response.headers['x-amzn-ErrorType'])
 
-        :param voice_name: voice name
-        :type voice_name: str
-        :param language: voice language
-        :type language: str
-        """
-        if not self._check_if_voice_exists(voice_name, language):
-            raise ValueError("Incorrect voice name-language pair")
-        self._voice_name = voice_name
-        self._language = language
+        if response.status_code != requests.codes.ok:
+            raise IvonaAPIException(
+                "Something wrong happened: {}".format(response.json())
+            )
+
+        return response
 
     def get_available_voices(self, filter_language=None):
         """
@@ -105,9 +106,7 @@ class IvonaAPI(object):
         :param filter_language: filter voices by language
         :type filter_language: bool
         """
-        endpoint = urljoin(
-            IVONA_REGION_ENDPOINTS[self.region], 'ListVoices',
-        )
+        endpoint = 'ListVoices'
 
         data = dict()
         if filter_language:
@@ -117,10 +116,7 @@ class IvonaAPI(object):
                 },
             })
 
-        response = requests.get(endpoint, auth=self._aws4auth)
-
-        if 'x-amzn-ErrorType' in response.headers:
-            raise IvonaAPIException(response.headers['x-amzn-ErrorType'])
+        response = self._get_response('get', endpoint, data)
 
         return response.json()['Voices']
 
@@ -140,9 +136,7 @@ class IvonaAPI(object):
         :param language: voice language
         :type language: str
         """
-        endpoint = urljoin(
-            IVONA_REGION_ENDPOINTS[self.region], 'CreateSpeech',
-        )
+        endpoint = 'CreateSpeech'
 
         data = {
             'Input': {
@@ -158,14 +152,11 @@ class IvonaAPI(object):
                 'ParagraphBreak': self.paragraph_break,
             },
             'Voice': {
-                'Name': voice_name or self._voice_name,
-                'Language': language or self._language,
+                'Name': voice_name or self.voice_name,
+                'Language': language or self.language,
             },
         }
 
-        response = requests.post(endpoint, auth=self._aws4auth, json=data)
-
-        if 'x-amzn-ErrorType' in response.headers:
-            raise IvonaAPIException(response.headers['x-amzn-ErrorType'])
+        response = self._get_response('post', endpoint, data)
 
         file.write(response.content)
