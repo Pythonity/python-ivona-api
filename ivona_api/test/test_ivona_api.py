@@ -75,7 +75,7 @@ def test_text_to_speech(voice_name, voice_language, content, org_file):
 
     org_file = os.path.join(BASE_DIR, org_file)
 
-    with tempfile.NamedTemporaryFile() as temp_file:
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         ivona_api.text_to_speech(content, temp_file)
 
-        assert filecmp.cmp(org_file, temp_file.name)
+    assert filecmp.cmp(org_file, temp_file.name)
