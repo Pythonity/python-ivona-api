@@ -5,6 +5,8 @@ import requests
 from requests_aws4auth import AWS4Auth
 from six.moves.urllib.parse import urljoin
 
+from ivona_api.exceptions import IvonaAPIException
+
 
 IVONA_REGION_ENDPOINTS = {
     'eu-west-1': 'https://tts.eu-west-1.ivonacloud.com',  # EU
@@ -130,8 +132,3 @@ class IvonaAPI(object):
         file.write(r.content)
 
         return True
-
-
-class IvonaAPIException(Exception):
-    """Base IvonaAPI exception"""
-    pass
