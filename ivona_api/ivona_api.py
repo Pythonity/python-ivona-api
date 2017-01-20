@@ -19,45 +19,26 @@ class IvonaAPI(object):
     Currently implements 'CreateSpeech' and 'ListVoices' endpoints, without
     support for lexicon actions.
     """
-    ALLOWED_CODECS = ['ogg', 'mp3', 'mp4']
-
-    @property
-    def region(self):
-        return self._region
-
-    @region.setter
-    def region(self, value):
-        if value not in IVONA_REGION_ENDPOINTS.keys():
-            raise ValueError("Incorrect region: {}".format(value))
-        self._region = value
-
-    @property
-    def codec(self):
-        return self._codec
-
-    @codec.setter
-    def codec(self, value):
-        if value.lower() not in self.ALLOWED_CODECS:
-            raise ValueError("Incorrect codec - only ogg, mp3 and mp4 allowed")
-        self._codec = value
-
     def __init__(self, access_key, secret_key, voice_name='Salli',
                  language='en-US', codec='mp3', region='eu-west-1'):
+        # Choices: 'eu-west-1', 'us-east-1', 'us-west-2'
         self.region = region
         self._aws4auth = AWS4Auth(access_key, secret_key, region, 'tts')
 
         self.available_voices = self.get_available_voices()
         self.set_voice(voice_name, language)
 
+        # Choices: 'ogg', 'mp3', 'mp4'
         self.codec = codec.lower()
 
         # Below are listed additional parameters that have default values,
         # but are initialized here so that they can be changed on instance
         # basis if need be
 
-        # ['x-slow', 'slow', 'medium', 'fast', 'x-fast', 'default']
+        # Choices: 'x-slow', 'slow', 'medium', 'fast', 'x-fast', 'default'
         self.rate = 'default'
-        # ['silent', 'x-soft', 'soft', 'medium', 'loud', 'x-loud', 'default']
+        # Choices:
+        # 'silent', 'x-soft', 'soft', 'medium', 'loud', 'x-loud', 'default'
         self.volume = 'default'
         # Integer in the range of 0-3000 (in milliseconds)
         self.sentence_break = 400
@@ -65,11 +46,11 @@ class IvonaAPI(object):
         self.paragraph_break = 650
 
     def _check_if_voice_exists(self, voice_name, language):
-        if not any([v['Name'] == voice_name and v['Language'] == language
-                    for v in self.available_voices]):
-            return False
-        else:
-            return True
+        voice_avalible = not any(
+            [v['Name'] == voice_name and v['Language'] == language
+             for v in self.available_voices]
+        )
+        return voice_avalible
 
     def set_voice(self, voice_name, language):
         """Make sure that passed voice name and language pair exists"""
