@@ -108,24 +108,21 @@ class IvonaAPI(object):
         endpoint = urljoin(
             IVONA_REGION_ENDPOINTS[self.region], 'ListVoices',
         )
-        if filter_language:
-            if not any([v['Language'] == filter_language
-                        for v in self.available_voices]):
-                raise ValueError("Incorrect language")
 
-            data = {
+        data = dict()
+        if filter_language:
+            data.update({
                 'Voice': {
                     'Language': filter_language,
                 },
-            }
-            r = requests.post(endpoint, auth=self._aws4auth, json=data)
-        else:
-            r = requests.get(endpoint, auth=self._aws4auth)
+            })
 
-        if 'x-amzn-ErrorType' in r.headers:
-            raise IvonaAPIException(r.headers['x-amzn-ErrorType'])
+        response = requests.get(endpoint, auth=self._aws4auth)
 
-        return r.json()['Voices']
+        if 'x-amzn-ErrorType' in response.headers:
+            raise IvonaAPIException(response.headers['x-amzn-ErrorType'])
+
+        return response.json()['Voices']
 
     def text_to_speech(self, text, file, voice_name=None, language=None):
         """
