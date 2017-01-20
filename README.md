@@ -25,18 +25,18 @@ $ pip install ivona_api
 ```
 
 ## API
-There's no documentation as of now, but the code is commented and *should* be 
-pretty straightforward to use.
+There's no proper documentation as of now, but the code is commented and
+*should* be pretty straightforward to use.
 
-That said - feel free to ask [me](mailto:pawel.adamczak@sidnet.info) if anything
-is unclear.
+That said - feel free to ask me via [email](mailto:pawel.ad@gmail.com) or 
+[GitHub issues][github add issue] if anything is unclear.
 
 ## Tests
 Package was tested with the help of `py.test` and `tox` on Python 2.7, 3.4, 3.5
 and 3.6 (see `tox.ini`).
 
 To run tests yourself you need to set environment variables with secret
-and access keys before running `tox`:
+and access keys before running `tox` inside the repository:
 
 Code coverage is available at [Coveralls][coveralls].
 
@@ -61,6 +61,7 @@ Written by [Paweł Adamczak][pawelad].
 
 [coveralls]: https://coveralls.io/github/Pythonity/python-ivona-api
 [github]: https://github.com/Pythonity/python-ivona-api
+[github add issue]: https://github.com/Pythonity/python-ivona-api/issues/new
 [ivona keys]: http://developer.ivona.com/en/speechcloud/introduction.html#Credentials
 [ivona speak]: https://github.com/Pythonity/ivona-speak
 [ivona]: https://www.ivona.com/
