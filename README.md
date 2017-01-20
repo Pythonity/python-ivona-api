@@ -18,7 +18,7 @@ If you're looking for out-of-the-box solution, you should probably use
 use its functionality directly from your shell.
 
 ## Installation
-With PyPI:
+From PyPI:
 
 ```
 $ pip install ivona_api
@@ -35,10 +35,10 @@ That said - feel free to ask me via [email](mailto:pawel.ad@gmail.com) or
 Package was tested with the help of `py.test` and `tox` on Python 2.7, 3.4, 3.5
 and 3.6 (see `tox.ini`).
 
+Code coverage is available at [Coveralls][coveralls].
+
 To run tests yourself you need to set environment variables with secret
 and access keys before running `tox` inside the repository:
-
-Code coverage is available at [Coveralls][coveralls].
 
 ```shell
 $ pip install -r requirements/dev.txt
