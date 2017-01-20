@@ -23,6 +23,23 @@ class IvonaAPI(object):
     """
     def __init__(self, access_key, secret_key, voice_name='Salli',
                  language='en-US', codec='mp3', region='eu-west-1'):
+        """
+        Initialize class instance with AWS4Auth object and default voice
+        export values
+
+        :param access_key: Ivona access key
+        :type access_key: str
+        :param secret_key: Ivona secret key
+        :type secret_key: str
+        :param voice_name: voice name
+        :type voice_name: str
+        :param language: voice language
+        :type language: str
+        :param codec: codec that will be used to encode the audio file
+        :type codec: str
+        :param region: Amazon datacenter region
+        :type region: str
+        """
         # Choices: 'eu-west-1', 'us-east-1', 'us-west-2'
         self.region = region
         self._aws4auth = AWS4Auth(access_key, secret_key, region, 'tts')
@@ -48,14 +65,31 @@ class IvonaAPI(object):
         self.paragraph_break = 650
 
     def _check_if_voice_exists(self, voice_name, language):
-        voice_avalible = not any(
+        """
+        Helper method that checks if given voice actually exists
+
+        :param voice_name: voice name
+        :type voice_name: str
+        :param language: voice language
+        :type language: str
+        :returns: if the voice exists
+        :rtype: bool
+        """
+        voice_exists = not any(
             [v['Name'] == voice_name and v['Language'] == language
              for v in self.available_voices]
         )
-        return voice_avalible
+        return voice_exists
 
     def set_voice(self, voice_name, language):
-        """Make sure that passed voice name and language pair exists"""
+        """
+        Set Ivona voice
+
+        :param voice_name: voice name
+        :type voice_name: str
+        :param language: voice language
+        :type language: str
+        """
         if not self._check_if_voice_exists(voice_name, language):
             raise ValueError("Incorrect voice name-language pair")
         self._voice_name = voice_name
@@ -64,7 +98,12 @@ class IvonaAPI(object):
     def get_available_voices(self, filter_language=None):
         """
         Returns a list of available voices, via 'ListVoices' endpoint
+
+        Docs:
             http://developer.ivona.com/en/speechcloud/actions.html#ListVoices
+
+        :param filter_language: filter voices by language
+        :type filter_language: bool
         """
         endpoint = urljoin(
             IVONA_REGION_ENDPOINTS[self.region], 'ListVoices',
@@ -88,10 +127,21 @@ class IvonaAPI(object):
 
         return r.json()['Voices']
 
-    def text_to_speech(self, text, path, voice_name=None, language=None):
+    def text_to_speech(self, text, file, voice_name=None, language=None):
         """
         Saves given text synthesized audio file, via 'CreateSpeech' endpoint
+
+        Docs:
             http://developer.ivona.com/en/speechcloud/actions.html#CreateSpeech
+
+        :param text: text to synthesize
+        :type text: str
+        :param file: file that will be used to save the audio
+        :type file: file
+        :param voice_name: voice name
+        :type voice_name: str
+        :param language: voice language
+        :type language: str
         """
         if voice_name or language:
             if not self._check_if_voice_exists(voice_name, language):
