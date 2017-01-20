@@ -4,73 +4,55 @@ from __future__ import absolute_import, unicode_literals
 import os
 import tempfile
 import filecmp
-from uuid import uuid4
 
 import pytest
+import requests
+import requests_aws4auth
 from flaky import flaky
 
-from ivona_api.ivona_api import IvonaAPI, IvonaAPIException
+from ivona_api import IvonaAPI
+from ivona_api.ivona_api import IVONA_ACCESS_KEY_ENV, IVONA_SECRET_KEY_ENV
 
 
-# Fixtures
-@pytest.fixture(scope='module')
-def auth_keys():
-    """Get working auth keys from environment variables"""
-    access_key = os.environ["IVONA_ACCESS_KEY"]
-    secret_key = os.environ["IVONA_SECRET_KEY"]
-    assert access_key and secret_key
-
-    return access_key, secret_key
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 # Tests
-def test_init(auth_keys):
+def test_init():
     """Test initializing"""
-    # No arguments
-    with pytest.raises(TypeError):
+    ivona_api = IvonaAPI()
+
+    assert ivona_api._access_key == os.environ[IVONA_ACCESS_KEY_ENV]
+    assert ivona_api._secret_key == os.environ[IVONA_SECRET_KEY_ENV]
+
+    assert ivona_api.region == 'eu-west-1'
+    assert ivona_api.codec == 'mp3'
+    assert ivona_api.voice_name == 'Salli'
+    assert ivona_api.language == 'en-US'
+    assert ivona_api.rate == 'default'
+    assert ivona_api.volume == 'default'
+    assert ivona_api.sentence_break == 400
+    assert ivona_api.paragraph_break == 650
+
+    assert isinstance(ivona_api._aws4auth, requests_aws4auth.AWS4Auth)
+    assert isinstance(ivona_api.session, requests.Session)
+
+
+def test_init_no_auth_data(monkeypatch):
+    """Test initializing without auth data"""
+    monkeypatch.delenv(IVONA_ACCESS_KEY_ENV, raising=False)
+    monkeypatch.delenv(IVONA_SECRET_KEY_ENV, raising=False)
+
+    with pytest.raises(ValueError):
         IvonaAPI()
 
-    # Wrong auth keys
-    with pytest.raises(IvonaAPIException):
-        IvonaAPI(str(uuid4()), str(uuid4()))
-
-    # With incorrect region
-    with pytest.raises(ValueError):
-        IvonaAPI(auth_keys[0], auth_keys[1], region=str(uuid4()))
-
-    # With nonexistent voice
-    with pytest.raises(ValueError):
-        IvonaAPI(auth_keys[0], auth_keys[1], voice_name=str(uuid4()))
-
-    # With not allowed codec
-    with pytest.raises(ValueError):
-        IvonaAPI(auth_keys[0], auth_keys[1], codec=str(uuid4()))
-
 
 @flaky
-def test_available_voices(auth_keys):
+def test_available_voices():
     """Test getting available voices"""
-    ivona_api = IvonaAPI(auth_keys[0], auth_keys[1])
+    ivona_api = IvonaAPI()
 
-    voices = ivona_api.available_voices
-    assert len(voices) > 1
-
-    # Make sure that default voice is available
-    assert any(
-        [v['Name'] == 'Salli' and v['Language'] == 'en-US'
-         for v in voices]
-    )
-
-
-@flaky
-def test_available_voices_with_filter(auth_keys):
-    """Test getting available voices with filtering"""
-    ivona_api = IvonaAPI(auth_keys[0], auth_keys[1])
-
-    with pytest.raises(ValueError):
-        ivona_api.get_available_voices(str(uuid4()))
-
-    voices = ivona_api.get_available_voices('en-US')
+    voices = ivona_api.get_available_voices()
     assert len(voices) > 1
 
     # Make sure that default voice is available
@@ -85,28 +67,15 @@ def test_available_voices_with_filter(auth_keys):
     ('Salli', 'en-US', 'Hello world', 'files/salli_hello_world.mp3'),
     ('Maja', 'pl-PL', 'Dzień dobry', 'files/maja_dzien_dobry.mp3'),
 ])
-def test_text_to_speech(auth_keys, voice_name, voice_language, content,
-                        org_file):
+def test_text_to_speech(voice_name, voice_language, content, org_file):
     """Test synthesizing text to audio files"""
     ivona_api = IvonaAPI(
-        auth_keys[0], auth_keys[1],
         voice_name=voice_name, language=voice_language,
     )
 
+    org_file = os.path.join(BASE_DIR, org_file)
+
     with tempfile.NamedTemporaryFile() as temp_file:
-        ivona_api.text_to_speech(content, temp_file.name)
+        ivona_api.text_to_speech(content, temp_file)
 
         assert filecmp.cmp(org_file, temp_file.name)
-
-
-def test_text_to_speech_custom_voice(auth_keys):
-    """Test setting custom voice"""
-    ivona_api = IvonaAPI(auth_keys[0], auth_keys[1])
-
-    with pytest.raises(ValueError):
-        with tempfile.NamedTemporaryFile() as temp_file:
-            ivona_api.text_to_speech(
-                text=str(uuid4()),
-                path=temp_file.name,
-                voice_name=str(uuid4()),
-            )

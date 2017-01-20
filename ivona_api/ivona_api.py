@@ -45,8 +45,13 @@ class IvonaAPI(object):
         :param region: Amazon datacenter region
         :type region: str
         """
-        self._access_key = access_key or os.environ[IVONA_ACCESS_KEY_ENV]
-        self._secret_key = secret_key or os.environ[IVONA_SECRET_KEY_ENV]
+        self._access_key = access_key or os.environ.get(IVONA_ACCESS_KEY_ENV)
+        self._secret_key = secret_key or os.environ.get(IVONA_SECRET_KEY_ENV)
+
+        if not all([self._access_key, self._secret_key]):
+            raise ValueError(
+                "Ivona access key and secret key need to be avalible"
+            )
 
         # Choices: 'eu-west-1', 'us-east-1', 'us-west-2'
         self.region = region
@@ -107,25 +112,28 @@ class IvonaAPI(object):
 
         return response
 
-    def get_available_voices(self, filter_language=None):
+    def get_available_voices(self, language=None, gender=None):
         """
         Returns a list of available voices, via 'ListVoices' endpoint
 
         Docs:
             http://developer.ivona.com/en/speechcloud/actions.html#ListVoices
 
-        :param filter_language: filter voices by language
-        :type filter_language: bool
+        :param language: returned voices language
+        :type language: str
+        :param gender: returned voices gender
+        :type gender: str
         """
         endpoint = 'ListVoices'
 
         data = dict()
-        if filter_language:
-            data.update({
-                'Voice': {
-                    'Language': filter_language,
-                },
-            })
+        if language:
+            data.update({'Voice': {'Language': language}})
+
+        if gender:
+            data.update({'Voice': {'Gender': gender}})
+
+        print(data)
 
         response = self._get_response('get', endpoint, data)
 
