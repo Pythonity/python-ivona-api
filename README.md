@@ -28,8 +28,8 @@ $ pip install ivona_api
 There's no proper documentation as of now, but the code is commented and
 *should* be pretty straightforward to use.
 
-That said - feel free to ask me via [email](mailto:pawel.ad@gmail.com) or 
-[GitHub issues][github add issue] if anything is unclear.
+That said - feel free to open a [GitHub issues][github add issue] if anything
+is unclear.
 
 ## Tests
 Package was tested with the help of `py.test` and `tox` on Python 2.7, 3.4, 3.5
@@ -41,9 +41,9 @@ To run tests yourself you need to set environment variables with secret
 and access keys before running `tox` inside the repository:
 
 ```shell
-$ pip install -r requirements/dev.txt
-$ export IVONA_ACCESS_KEY="YOUR_ACTUAL_ACCESS_KEY"
-$ export IVONA_SECRET_KEY="YOUR_ACTUAL_SECRET_KEY"
+$ export IVONA_ACCESS_KEY='...'
+$ export IVONA_SECRET_KEY='...'
+$ pip install tox
 $ tox
 ```
 
@@ -54,9 +54,13 @@ Feel free to use, ask, fork, star, report bugs, fix them, suggest enhancements,
 add functionality and point out any mistakes. Thanks!
 
 ## Authors
-Developed and maintained by [Pythonity][pythonity], a group of Python enthusiasts who love open source, have a neat [blog][pythonity blog] and are available [for hire][pythonity].
+Developed and maintained by [Pythonity][pythonity], a group of Python
+enthusiasts who love open source, have a neat [blog][pythonity blog] and are
+available [for hire][pythonity].
 
 Written by [Paweł Adamczak][pawelad].
+
+Released under [MIT License][license].
 
 
 [coveralls]: https://coveralls.io/github/Pythonity/python-ivona-api
