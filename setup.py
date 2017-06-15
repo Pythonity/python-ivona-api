@@ -55,12 +55,12 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'requests>=2.12.5',
+        'requests>=2.18.1',
         'requests-aws4auth>=0.9',
         'six>=1.10.0',
     ],
     extras_require={
-        'testing': ['pytest', 'flaky'],
+        'testing': ['pytest'],
     },
     keywords='amazon ivona api text to speech',
     classifiers=[
