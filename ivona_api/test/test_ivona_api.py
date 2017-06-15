@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
+"""
+Test `ivona_api.ivona_api` module
+"""
 from __future__ import absolute_import, unicode_literals
 
 import os
 import tempfile
-import filecmp
 
 import pytest
 import requests
 import requests_aws4auth
-from flaky import flaky
 
 from ivona_api import IvonaAPI
 from ivona_api.ivona_api import IVONA_ACCESS_KEY_ENV, IVONA_SECRET_KEY_ENV
-
-
-BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
 # Tests
@@ -22,8 +20,8 @@ def test_init():
     """Test initializing"""
     ivona_api = IvonaAPI()
 
-    assert ivona_api._access_key == os.environ[IVONA_ACCESS_KEY_ENV]
-    assert ivona_api._secret_key == os.environ[IVONA_SECRET_KEY_ENV]
+    assert ivona_api._access_key == os.getenv(IVONA_ACCESS_KEY_ENV)
+    assert ivona_api._secret_key == os.getenv(IVONA_SECRET_KEY_ENV)
 
     assert ivona_api.region == 'eu-west-1'
     assert ivona_api.codec == 'mp3'
@@ -47,7 +45,6 @@ def test_init_no_auth_data(monkeypatch):
         IvonaAPI()
 
 
-@flaky
 def test_available_voices():
     """Test getting available voices"""
     ivona_api = IvonaAPI()
@@ -62,20 +59,20 @@ def test_available_voices():
     )
 
 
-@flaky
-@pytest.mark.parametrize('voice_name,voice_language,content,org_file', [
-    ('Salli', 'en-US', 'Hello world', 'files/salli_hello_world.mp3'),
-    ('Maja', 'pl-PL', 'Dzień dobry', 'files/maja_dzien_dobry.mp3'),
+@pytest.mark.parametrize('voice_name,voice_language,content', [
+    ('Salli', 'en-US', 'Hello world'),
+    ('Maja', 'pl-PL', 'Dzień dobry'),
 ])
-def test_text_to_speech(voice_name, voice_language, content, org_file):
+def test_text_to_speech(voice_name, voice_language, content):
     """Test synthesizing text to audio files"""
     ivona_api = IvonaAPI(
         voice_name=voice_name, language=voice_language,
     )
 
-    org_file = os.path.join(BASE_DIR, org_file)
-
     with tempfile.NamedTemporaryFile(delete=False) as temp_file:
         ivona_api.text_to_speech(content, temp_file)
 
-    assert filecmp.cmp(org_file, temp_file.name)
+    assert os.path.getsize(temp_file.name) > 0
+
+
+# TODO: Fully mock API responses and don't require API keys for running tests
